@@ -1,5 +1,4 @@
-/*
-*      Hex-Rays Decompiler project
+/* *      Hex-Rays Decompiler project
 *      Copyright (c) 2007-2018 by Hex-Rays, support@hex-rays.com
 *      ALL RIGHTS RESERVED.
 *
@@ -22,6 +21,7 @@ hexdsp_t *hexdsp = NULL;
 
 ObfCompilerOptimizer hook;
 CFUnflattener cfu;
+extern plugin_t PLUGIN;
 
 //--------------------------------------------------------------------------
 int idaapi init(void)
@@ -29,12 +29,17 @@ int idaapi init(void)
 	if (!init_hexrays_plugin())
 		return PLUGIN_SKIP; // no decompiler
 	const char *hxver = get_hexrays_version();
-	msg("Hex-rays version %s has been detected, %s ready to use\n", hxver, PLUGIN.wanted_name);
+	#if __EA64__
+	msg("Hex-rays 64-bit version %s has been detected, %s ready to use\n", hxver, PLUGIN.wanted_name);
+	#else
+	msg("Hex-rays 32-bit version %s has been detected, %s ready to use\n", hxver, PLUGIN.wanted_name);
+	#endif
+
 
 	// Install our block and instruction optimization classes.
 #if DO_OPTIMIZATION
-	install_optinsn_handler(&hook);
-	install_optblock_handler(&cfu);
+	//install_optinsn_handler(&hook);
+	//install_optblock_handler(&cfu);
 #endif
 	return PLUGIN_KEEP;
 }
@@ -47,14 +52,14 @@ void idaapi term(void)
 
 		// Uninstall our block and instruction optimization classes.
 #if DO_OPTIMIZATION
-		remove_optinsn_handler(&hook);
-		remove_optblock_handler(&cfu);
+		//remove_optinsn_handler(&hook);
+		//remove_optblock_handler(&cfu);
 		
 		// I couldn't figure out why, but my plugin would segfault if it tried
 		// to free mop_t pointers that it had allocated. Maybe hexdsp had been
 		// set to NULL at that point, so the calls to delete crashed? Anyway,
 		// cleaning up before we unload solved the issues.
-		cfu.Clear(true);
+		//cfu.Clear(true);
 #endif
 		term_hexrays_plugin();
 	}
@@ -63,23 +68,28 @@ void idaapi term(void)
 //--------------------------------------------------------------------------
 bool idaapi run(size_t arg)
 {
-	if (arg == 0xbeef)
-	{
-		PLUGIN.flags |= PLUGIN_UNL;
-		return true;
-	}
-	if (arg == 2)
-	{
-		FixCallsToAllocaProbe();
-		return true;
-	}
-	if (arg == 3)
-	{
-		ShowMicrocodeExplorer();
-		return true;
+	msg("Calling plugin Op: 0x%x\n", arg);
+	bool ret = false;
+	switch (arg) {
+	case 0xbeef:
+			PLUGIN.flags |= PLUGIN_UNL;
+			ret = true;
+			break;
+	case 2:
+			FixCallsToAllocaProbe();
+			ret = true;
+			break;
+	case 0:
+	case 3:
+			ShowMicrocodeExplorer();
+			ret = true;
+			break;
+	default:
+			msg("Unknown Op, exit");
+			break;
 	}
 
-	return true;
+	return ret;
 }
 
 //--------------------------------------------------------------------------
