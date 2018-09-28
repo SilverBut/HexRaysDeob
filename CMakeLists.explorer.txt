@@ -13,28 +13,28 @@ add_compile_definitions(__EA64__=1)
 add_compile_definitions(__X64__=1)
 
 file(GLOB LIB_SOURCES
-#        AllocaFixer.cpp
-#        CFFlattenInfo.cpp
-#        DefUtil.cpp
-#        HexRaysUtil.cpp
+        AllocaFixer.cpp
+        CFFlattenInfo.cpp
+        DefUtil.cpp
+        HexRaysUtil.cpp
         main.cpp
-#        MicrocodeExplorer.cpp
-#        PatternDeobfuscate.cpp
-#        PatternDeobfuscateUtil.cpp
-#        TargetUtil.cpp
-#        Unflattener.cpp
+        MicrocodeExplorer.cpp
+        PatternDeobfuscate.cpp
+        PatternDeobfuscateUtil.cpp
+        TargetUtil.cpp
+        Unflattener.cpp
         )
 file(GLOB LIB_HEADERS
-#        AllocaFixer.hpp
-#        CFFlattenInfo.hpp
-#        Config.hpp
-#        DefUtil.hpp
-#        HexRaysUtil.hpp
-#        MicrocodeExplorer.hpp
-#        PatternDeobfuscate.hpp
-#        PatternDeobfuscateUtil.hpp
-#        TargetUtil.hpp
-#        Unflattener.hpp
+        AllocaFixer.hpp
+        CFFlattenInfo.hpp
+        Config.hpp
+        DefUtil.hpp
+        HexRaysUtil.hpp
+        MicrocodeExplorer.hpp
+        PatternDeobfuscate.hpp
+        PatternDeobfuscateUtil.hpp
+        TargetUtil.hpp
+        Unflattener.hpp
         )
 
 
